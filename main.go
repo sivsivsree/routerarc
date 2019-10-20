@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/tls"
 	"fmt"
+	"github.com/sivsivsree/routerarc/dummy"
 	"io"
 	"log"
 	"net"
@@ -112,6 +113,8 @@ func main() {
 		}
 
 	})
+
+	dummy.Run()
 
 	go func() {
 
