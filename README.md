@@ -2,7 +2,7 @@
 ### API reverse proxy and Router Service.
 
 
-RouterArc is a API gateway and reverse proxy service, can be used as an entry point of a microservice,
+RouterArc is an API gateway and reverse proxy service, can be used as an entry point of a microservice,
 routing to diffrent services. 
 
 
