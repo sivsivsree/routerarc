@@ -1,4 +1,4 @@
-package proxy
+package dummy
 
 import (
 	"bytes"
@@ -22,13 +22,6 @@ type Server struct {
 
 func (server Server) Url() string {
 	return server.Scheme + "://" + server.Host + ":" + server.Port
-}
-
-type Proxy struct {
-	Host    string
-	Port    int
-	Scheme  string
-	Servers []Server
 }
 
 func (proxy Proxy) origin() string {

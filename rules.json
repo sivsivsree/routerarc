@@ -1,0 +1,40 @@
+{
+  "router": [
+    {
+      "service": "/auth",
+      "loadbalacer": "round-robin",
+      "upstream": [
+        "http://localhost:8081",
+        "http://localhost:8082"
+      ]
+    },
+    {
+      "servie": "/retrival",
+      "upstream": [
+        "http://localhost:8084",
+        "http://localhost:8085"
+      ],
+      "loadbalacer": "round-robin"
+    }
+  ],
+  "proxy": [
+    {
+      "name": "backend",
+      "port": "8081",
+      "to": [
+        "http://service1.ae",
+        "http://service2.example.com"
+      ],
+      "loadbalacer": "round-robin"
+    },
+    {
+      "name": "frontend",
+      "port": "7000",
+      "to": [
+        "http://service1.com",
+        "http://service5.example.com"
+      ],
+      "loadbalacer": "round-robin"
+    }
+  ]
+}

@@ -23,48 +23,66 @@ An API Gateway is a server that is the single entry point into the system. It is
 
 <hr>
 
+
+## Usage
+
+To run the service use, 
+
+```
+   routerarc -config=rules.json  
+```
+
+##### Flags :
+
+- `` -h `` : to view all the command line arguments. 
+- `` -config=<filename>`` : to specify the configurations.
+
 ## Config File Format
 
 The whole point of the project is to create a simple configuration based on json ```config.json```,
 with all the features packed to run microservices 
 
 ```
-router:[
-  {
-    servie: "/auth",
-    upstream: [
-      "http://localhost:8081",
-      "http://localhost:8082",
-    ],
-    loadbalacer: "round-robin" //[round-robin, least-connection, iphash]
-  },
-  {
-    servie: "/retrival",
-    upstream: [
-      "http://localhost:8084",
-      "http://localhost:8085",
-    ],
-    loadbalacer: "round-robin" //[round-robin, least-connection, iphash]
-  },  
-],
-proxy:[
+{
+  "router": [
     {
-     from: "http://api.example.com",
-     to: [
-        "http://service1.example.com",
-        "http://service2.example.com"
-     ],
-     loadbalacer: "round-robin" //[round-robin, least-connection, iphash]
-   },
-   {
-     from: "http://example.com",
-     to: [
+      "service": "/auth",
+      "loadbalacer": "round-robin",
+      "upstream": [
+        "http://localhost:8081",
+        "http://localhost:8082"
+      ]
+    },
+    {
+      "servie": "/retrival",
+      "upstream": [
         "http://localhost:8084",
+        "http://localhost:8085"
+      ],
+      "loadbalacer": "round-robin"
+    }
+  ],
+  "proxy": [
+    {
+      "name": "backend",
+      "port": "8081",
+      "to": [
+        "http://service1.ae",
+        "http://service2.example.com"
+      ],
+      "loadbalacer": "round-robin"
+    },
+    {
+      "name": "frontend",
+      "port": "7000",
+      "to": [
+        "http://service1.com",
         "http://service5.example.com"
-     ],
-     loadbalacer: "round-robin" //[round-robin, least-connection, iphash]
-   }
-]
+      ],
+      "loadbalacer": "round-robin"
+    }
+  ]
+}
 
 
 ```
