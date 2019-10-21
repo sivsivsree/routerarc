@@ -1,6 +1,7 @@
 package proxy
 
 import (
+	"context"
 	"fmt"
 	"github.com/sivsivsree/routerarc/data"
 	"io"
@@ -13,20 +14,23 @@ import (
 )
 
 type UpstreamServers struct {
-	upstreamServer *url.URL
+	upstreams []*url.URL
+	current   *url.URL
+	count     int
 }
 
-func (servers *UpstreamServers) setUpstreamServer(currentServer string) {
-	servers.upstreamServer, _ = url.Parse(currentServer)
+func (upstreamServers *UpstreamServers) setUpstreamServer(proxy data.Proxy) {
+	upstreamServers.current, _ = url.Parse(proxy.To[0])
+
 }
 
-func (servers UpstreamServers) proxyFunction(rw http.ResponseWriter, req *http.Request) {
+func (upstreamServers UpstreamServers) proxyFunction(rw http.ResponseWriter, req *http.Request) {
 
 	start := time.Now()
 
-	req.Host = servers.upstreamServer.Host
-	req.URL.Host = servers.upstreamServer.Host
-	req.URL.Scheme = servers.upstreamServer.Scheme
+	req.Host = upstreamServers.current.Host
+	req.URL.Host = upstreamServers.current.Host
+	req.URL.Scheme = upstreamServers.current.Scheme
 	req.RequestURI = ""
 
 	remoteAddressHost, _, _ := net.SplitHostPort(req.RemoteAddr)
@@ -85,6 +89,9 @@ func (servers UpstreamServers) proxyFunction(rw http.ResponseWriter, req *http.R
 
 		log.Println("[contentCopyError]: ", err)
 	}
+
+	defer response.Body.Close()
+
 	//copy the Trailer Values
 	for key, values := range response.Trailer {
 		for _, value := range values {
@@ -96,30 +103,73 @@ func (servers UpstreamServers) proxyFunction(rw http.ResponseWriter, req *http.R
 
 }
 
-func startHttpServer(port string, handler http.HandlerFunc) *http.Server {
+// ReverseProxyServer contains all the
+// ActiveServers used for Reverse proxying.
+type ReverseProxyServers struct {
+	ActiveServers []struct {
+		Name   string
+		Server *http.Server
+	}
+}
 
-	server := &http.Server{Addr: ":" + port, Handler: handler}
+// InitReverseProxy will be used to return the ReverseProxyServers instance.
+func InitReverseProxy() ReverseProxyServers {
+	return ReverseProxyServers{}
+}
+
+// startHttpServer the method is used to call UpstreamServers to make Proxy Servers
+func (rpServers *ReverseProxyServers) startHttpServer(proxy data.Proxy, handler http.HandlerFunc) *http.Server {
+
+	server := &http.Server{Addr: ":" + proxy.Port, Handler: handler}
 
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
-			// handle err
+			log.Println("[ReverseProxyServerUp]", proxy.Name, "failed,", err)
 		}
 	}()
-
 	return server
 }
 
-func SpinProxyServers(proxies []data.Proxy) {
+// SpinProxyServers is used to create servers based on the ports specified for
+// reverse proxying, will be passing the proxy[] from the configuration file.
+func (rpServers *ReverseProxyServers) SpinProxyServers(proxies []data.Proxy) {
 
-	for _, proxy := range proxies {
+	for _, proxyValue := range proxies {
 
 		go func(proxy data.Proxy) {
-			userver := &UpstreamServers{}
-			userver.setUpstreamServer(proxy.To[0])
-			serv := startHttpServer(proxy.Port, userver.proxyFunction)
 
-			log.Println(proxy.Name, "proxy running", serv.Addr)
-		}(proxy)
+			upServer := &UpstreamServers{}
+			upServer.setUpstreamServer(proxy)
+			server := rpServers.startHttpServer(proxy, upServer.proxyFunction)
+
+			rpServers.ActiveServers = append(rpServers.ActiveServers, struct {
+				Name   string
+				Server *http.Server
+			}{Name: proxy.Name, Server: server})
+
+			log.Println("[ReverseProxyServerUp]", proxy.Name, "reverse proxy serving on port", server.Addr)
+
+		}(proxyValue)
+
+	}
+
+}
+
+// ShutdownProxyServers is used to gracefully shutdown all the currently
+// running services.
+func (rpServers *ReverseProxyServers) ShutdownProxyServers() {
+
+	for _, rp := range rpServers.ActiveServers {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer func() {
+			// extra handling here
+			cancel()
+		}()
+		if err := rp.Server.Shutdown(ctx); err != nil {
+			log.Fatalf("Server Shutdown Failed:%+v", err)
+		}
+
+		log.Println("[ShutdownProxyServers]", rp.Server.Addr)
 
 	}
 

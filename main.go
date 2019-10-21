@@ -3,10 +3,14 @@ package main
 import (
 	"crypto/tls"
 	"flag"
+	"fmt"
 	"github.com/sivsivsree/routerarc/config"
 	"github.com/sivsivsree/routerarc/proxy"
 	"log"
 	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 func init() {
@@ -26,14 +30,25 @@ func SetUpFlags() {
 func main() {
 	conf := flag.String("config", "rules.json", "Configuration file path")
 	flag.Parse()
-	//parse the serviceConfig
+
+	fmt.Println("Configuration from", *conf)
+
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	// Parse the serviceConfig
 	serviceConfig, err := config.GetConfig(*conf)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("[configuration]", err)
 	}
 
-	ch := make(chan bool)
-	proxy.SpinProxyServers(serviceConfig.Proxy)
+	rp := proxy.InitReverseProxy()
 
-	<-ch
+	// Run only if there is proxy configurations in the config json.
+	if serviceConfig.ProxyServiceCount() > 0 {
+		rp.SpinProxyServers(serviceConfig.Proxy)
+	}
+
+	<-done
+	rp.ShutdownProxyServers()
+
 }

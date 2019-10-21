@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 )
 
-type ConfigFile struct {
+type Configurations struct {
 	Router []struct {
 		Service     string   `json:"service,omitempty"`
 		Loadbalacer string   `json:"loadbalacer"`
@@ -17,14 +17,23 @@ type ConfigFile struct {
 	Proxy []data.Proxy `json:"proxy"`
 }
 
-func (config ConfigFile) validateProxy() error {
-
+func (config Configurations) validateProxy() error {
 	return nil
 }
 
-func GetConfig(filename string) (*ConfigFile, error) {
-	plan, _ := ioutil.ReadFile(filename)
-	var config ConfigFile
+func (config Configurations) ProxyServiceCount() int {
+	return len(config.Proxy)
+
+}
+
+func GetConfig(filename string) (*Configurations, error) {
+
+	plan, readErr := ioutil.ReadFile(filename)
+	if readErr != nil {
+		return nil, readErr
+	}
+
+	var config Configurations
 	if err := json.Unmarshal(plan, &config); err != nil {
 		return nil, err
 	}

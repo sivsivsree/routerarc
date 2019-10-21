@@ -32,10 +32,30 @@ To run the service use,
    routerarc -config=rules.json  
 ```
 
+ 
+ 
 ##### Flags :
 
 - `` -h `` : to view all the command line arguments. 
 - `` -config=<filename>`` : to specify the configurations.
+
+
+<br>
+
+<br>
+
+  #### Using Docker 
+ 
+ > The routing configuration file 'rules' should be in the volume. 
+ > ``/var/routerarc`` in the below docker config.
+ 
+ <br>
+ 
+ ``` docker run --name somevol -v /var/routerarc:/rules routerarch ```
+ 
+ 
+ 
+ <br>
 
 ## Config File Format
 
@@ -46,26 +66,39 @@ with all the features packed to run microservices
 {
   "router": [
     {
-      "service": "/auth",
-      "loadbalacer": "round-robin",
-      "upstream": [
-        "http://localhost:8081",
-        "http://localhost:8082"
+      "port": "8080",
+      "case": [
+        {
+          "service": "/auth",
+          "loadbalacer": "round-robin",
+          "upstream": [
+            "http://localhost:8081",
+            "http://localhost:8082"
+          ]
+        },
+        {
+          "servie": "/mobile/auth",
+          "upstream": [
+            "http://localhost:8086",
+            "http://localhost:8045"
+          ],
+          "loadbalacer": "round-robin"
+        },
+        {
+          "servie": "/retrival",
+          "upstream": [
+            "http://localhost:8084",
+            "http://localhost:8085"
+          ],
+          "loadbalacer": "round-robin"
+        }
       ]
-    },
-    {
-      "servie": "/retrival",
-      "upstream": [
-        "http://localhost:8084",
-        "http://localhost:8085"
-      ],
-      "loadbalacer": "round-robin"
     }
   ],
   "proxy": [
     {
       "name": "backend",
-      "port": "8081",
+      "port": "8000",
       "to": [
         "http://service1.ae",
         "http://service2.example.com"
@@ -74,10 +107,10 @@ with all the features packed to run microservices
     },
     {
       "name": "frontend",
-      "port": "7000",
+      "port": "9000",
       "to": [
-        "http://service1.com",
-        "http://service5.example.com"
+        "https://jsonplaceholder.typicode.com",
+        "http://example.com"
       ],
       "loadbalacer": "round-robin"
     }
