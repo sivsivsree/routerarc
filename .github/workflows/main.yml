@@ -8,8 +8,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
-      - name: Run a one-line script
-          run: export GOOS=linux
-      - name: Go Release Binary
-        uses: ngs/go-release.action@v1.0.2
+    - uses: actions/checkout@v1
+    - name: Run a one-line script
+      run: export GOOS=linux
+    - name: Go Release Binary
+      uses: ngs/go-release.action@v1.0.2
