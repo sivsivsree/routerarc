@@ -6,10 +6,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     steps:
-    - uses: actions/checkout@v1
-    - name: Run a one-line script
-      run: echo Hello, world!
-    - name: Go Release Binary
-      uses: ngs/go-release.action@v1.0.2
+      - uses: actions/checkout@v1
+      - name: Run a one-line script
+        run: echo Hello, world!
+      - name: Go Release Binary
+        run: export GOOS=linux
+        uses: ngs/go-release.action@v1.0.2
