@@ -4,7 +4,7 @@ set -eux
 
 /build.sh
 
-export GOOS=linux
+GOOS=linux
 
 EVENT_DATA=$(cat $GITHUB_EVENT_PATH)
 echo $EVENT_DATA | jq .
