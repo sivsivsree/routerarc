@@ -1,17 +1,6 @@
 package dummy
 
-import (
-	"bytes"
-	"io"
-	"io/ioutil"
-	"log"
-	"math"
-	"net/http"
-	"net/url"
-	"strconv"
-	"strings"
-)
-
+/*
 type Server struct {
 	Name        string
 	Scheme      string
@@ -136,3 +125,4 @@ func (proxy Proxy) attemptServers(w http.ResponseWriter, r *http.Request, ignore
 func (proxy Proxy) handler(w http.ResponseWriter, r *http.Request) {
 	proxy.attemptServers(w, r, []string{})
 }
+*/
