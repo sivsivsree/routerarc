@@ -10,7 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Run a one-line script
-        run: echo Hello, world!
+          run: export GOOS=linux
       - name: Go Release Binary
-        run: export GOOS=linux
         uses: ngs/go-release.action@v1.0.2
