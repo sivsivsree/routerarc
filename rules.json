@@ -35,8 +35,8 @@
       "name": "backend",
       "port": "8000",
       "to": [
-        "http://service1.ae",
-        "http://service2.example.com"
+        "https://instagram.com",
+        "https://developers.facebook.com"
       ],
       "loadbalacer": "round-robin"
     },

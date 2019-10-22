@@ -22,11 +22,13 @@ func SetUpFlags() {
 }
 
 /*
-	So basically what we are going to build is
-	a api gateway and proxy server with load balancing
-	without complex configurations. its a start with the
-	single things we need to take into account.
-*/
+*
+*	So basically what we are going to build is
+*	a api gateway and proxy server with load balancing
+*	without complex configurations. its a start with the
+*	single things we need to take into account.
+*
+ */
 func main() {
 	conf := flag.String("config", "rules.json", "Configuration file path")
 	flag.Parse()
@@ -41,9 +43,16 @@ func main() {
 		log.Fatal("[configuration]", err)
 	}
 
-	rp := proxy.InitReverseProxy()
+	// Initialize the APIGatewayServer
+	//gwApi := gateway.InitApiGatewayServer()
+	//// Run only if there is Router configurations in the configuration.
+	//if serviceConfig.RouterServiceCount() > 0 {
+	//	gwApi.SpinGatewayServer(serviceConfig.Router)
+	//}
 
-	// Run only if there is proxy configurations in the config json.
+	// Initialize the ReverseProxy Server
+	rp := proxy.InitReverseProxy()
+	// Run only if there is proxy configurations in the configuration.
 	if serviceConfig.ProxyServiceCount() > 0 {
 		rp.SpinProxyServers(serviceConfig.Proxy)
 	}

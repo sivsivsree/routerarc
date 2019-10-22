@@ -7,14 +7,8 @@ import (
 )
 
 type Configurations struct {
-	Router []struct {
-		Service     string   `json:"service,omitempty"`
-		Loadbalacer string   `json:"loadbalacer"`
-		Upstream    []string `json:"upstream"`
-		Servie      string   `json:"servie,omitempty"`
-	} `json:"router"`
-
-	Proxy []data.Proxy `json:"proxy"`
+	Router []data.Router `json:"router"`
+	Proxy  []data.Proxy  `json:"proxy"`
 }
 
 func (config Configurations) validateProxy() error {
@@ -23,6 +17,11 @@ func (config Configurations) validateProxy() error {
 
 func (config Configurations) ProxyServiceCount() int {
 	return len(config.Proxy)
+
+}
+
+func (config Configurations) RouterServiceCount() int {
+	return len(config.Router)
 
 }
 
