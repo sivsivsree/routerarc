@@ -1,6 +1,6 @@
 # RouterArc [Working on it] 
 ### API reverse proxy and Router Service.
-
+[![Actions Status](https://github.com/sivsivsree/routerarc/workflows/Code/badge.svg)](https://github.com/sivsivsree/routerarc/actions)
 
 RouterArc is an API gateway and reverse proxy service, can be used as an entry point of a microservice,
 routing to diffrent services. 

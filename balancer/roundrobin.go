@@ -7,21 +7,14 @@ import (
 	"time"
 )
 
-//type random struct {
-//	rand *rand.Rand
-//}
-//
-//func newRandom(endpoints []string) *random {
-//	t := time.Now().UnixNano()
-//	return &random{rand: rand.New(rand.NewSource(t))}
-//}
-
+// Keeps the roundrobin details.
 type roundRobin struct {
 	mx        sync.Mutex
 	index     int
 	endpoints []string
 }
 
+// NewRoundRobin is used to return the LBAlgorithm instance
 func NewRoundRobin(endpoints []string) LBAlgorithm {
 	i := time.Now().UnixNano()
 	rand.Seed(i)

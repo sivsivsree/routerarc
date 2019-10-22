@@ -35,8 +35,8 @@
       "name": "backend",
       "port": "8000",
       "to": [
-        "https://instagram.com",
-        "https://developers.facebook.com"
+        "https://api.github.com",
+        "http://api.twitter.com/"
       ],
       "loadbalacer": "round-robin"
     },

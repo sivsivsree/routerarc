@@ -6,7 +6,6 @@ import (
 	"github.com/sivsivsree/routerarc/data"
 	"log"
 	"net/http"
-	"net/url"
 	"time"
 )
 
@@ -44,24 +43,8 @@ func (rpServers *ReverseProxyServers) SpinProxyServers(proxies []data.Proxy) {
 	for _, proxyValue := range proxies {
 
 		go func(proxy data.Proxy) {
-
-			//balanceServers := setBalanceServers(proxy.To)
-
-			//var balanceHandler *http.Handler
-
-			//switch proxy.Loadbalacer {
-			//case "round-robin":
-			//	balanceHandler = balancer.LoadBalancer(proxy.To, proxyFunction)
-			//	break;
-			//default:
-			//	balanceHandler = balancer.GetRoundRobinBalancer(proxy.To, proxyFunction)
-			//}
-			//
-			//if balanceHandler == nil {
-			//	log.Println("[ReverseProxyServerUp]", proxy.Name, "Failed")
-			//}
-
-			lb := balancer.New("round-robin", proxy.To)
+			// make the balance handle pass through here
+			lb := balancer.New(proxy.Loadbalacer, proxy.To)
 			server := rpServers.startHttpServer(proxy, lb)
 
 			rpServers.ActiveServers = append(rpServers.ActiveServers, struct {
@@ -95,13 +78,4 @@ func (rpServers *ReverseProxyServers) ShutdownProxyServers() {
 
 	}
 
-}
-
-func setBalanceServers(balanceesStrings []string) []url.URL {
-	var balancees = []url.URL{}
-	for _, u := range balanceesStrings {
-		var purl, _ = url.Parse(u)
-		balancees = append(balancees, *purl)
-	}
-	return balancees
 }
