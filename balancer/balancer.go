@@ -107,6 +107,7 @@ func (lb *LB) ServeHTTP(rw http.ResponseWriter, req *http.Request) {
 	}
 
 	close(proxyDone)
+
 	fmt.Println(time.Since(start).String())
 }
 

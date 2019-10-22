@@ -36,7 +36,7 @@
       "port": "8000",
       "to": [
         "https://api.github.com",
-        "http://api.twitter.com/"
+        "https://google.com"
       ],
       "loadbalacer": "round-robin"
     },

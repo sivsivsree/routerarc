@@ -1,0 +1,34 @@
+router:
+  - port: '8080'
+    case:
+      - service: "/auth"
+        loadbalacer: round-robin
+        upstream:
+          - http://localhost:8081
+          - http://localhost:8082
+          -
+      - servie: "/mobile/auth"
+        upstream:
+          - http://localhost:8086
+          - http://localhost:8045
+        loadbalacer: round-robin
+
+      - servie: "/retrival"
+        upstream:
+          - http://localhost:8084
+          - http://localhost:8085
+        loadbalacer: round-robin
+proxy:
+  - name: backend
+    port: '8000'
+    to:
+      - https://api.github.com
+      - https://google.com
+    loadbalacer: round-robin
+
+  - name: frontend
+    port: '9000'
+    to:
+      - https://jsonplaceholder.typicode.com
+      - http://example.com
+    loadbalacer: round-robin

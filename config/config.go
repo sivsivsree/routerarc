@@ -3,12 +3,13 @@ package config
 import (
 	"encoding/json"
 	"github.com/sivsivsree/routerarc/data"
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
 )
 
 type Configurations struct {
-	Router []data.Router `json:"router"`
-	Proxy  []data.Proxy  `json:"proxy"`
+	Router []data.Router `json:"router";yaml:"router"`
+	Proxy  []data.Proxy  `json:"proxy";yaml:"proxy"`
 }
 
 func (config Configurations) validateProxy() error {
@@ -25,7 +26,7 @@ func (config Configurations) RouterServiceCount() int {
 
 }
 
-func GetConfig(filename string) (*Configurations, error) {
+func GetConfig(filename string, jsonfile bool) (*Configurations, error) {
 
 	plan, readErr := ioutil.ReadFile(filename)
 	if readErr != nil {
@@ -33,8 +34,14 @@ func GetConfig(filename string) (*Configurations, error) {
 	}
 
 	var config Configurations
-	if err := json.Unmarshal(plan, &config); err != nil {
-		return nil, err
+	if jsonfile {
+		if err := json.Unmarshal(plan, &config); err != nil {
+			return nil, err
+		}
+	} else {
+		if err := yaml.Unmarshal(plan, &config); err != nil {
+			return nil, err
+		}
 	}
 
 	if err := config.validateProxy(); err != nil {

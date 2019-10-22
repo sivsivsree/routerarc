@@ -62,6 +62,49 @@ To run the service use,
 The whole point of the project is to create a simple configuration based on json ```config.json```,
 with all the features packed to run microservices 
 
+> The configuration can either be in YAML format or in JSON format.
+> If no configuration file is provided it will look for ```rules.yaml```
+
+ ##### 1. YAML configuration Example ```config.yaml```
+
+```
+router:
+  - port: '8080'
+    case:
+      - service: "/auth"
+        loadbalacer: round-robin
+        upstream:
+          - http://localhost:8081
+          - http://localhost:8082
+      - servie: "/mobile/auth"
+        upstream:
+          - http://localhost:8086
+          - http://localhost:8045
+        loadbalacer: round-robin
+      - servie: "/retrival"
+        upstream:
+          - http://localhost:8084
+          - http://localhost:8085
+        loadbalacer: round-robin
+proxy:
+  - name: backend
+    port: '8000'
+    to:
+      - https://api.github.com
+      - https://google.com
+    loadbalacer: round-robin
+  - name: frontend
+    port: '9000'
+    to:
+      - https://jsonplaceholder.typicode.com
+      - http://example.com
+    loadbalacer: round-robin
+    
+```
+
+<br>
+
+ ##### 2. JSON configuration Example ```rules.yaml```
 ```
 {
   "router": [

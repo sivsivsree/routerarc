@@ -3,7 +3,6 @@ package main
 import (
 	"crypto/tls"
 	"flag"
-	"fmt"
 	"github.com/sivsivsree/routerarc/config"
 	"github.com/sivsivsree/routerarc/proxy"
 	"log"
@@ -30,15 +29,19 @@ func SetUpFlags() {
 *
  */
 func main() {
-	conf := flag.String("config", "rules.json", "Configuration file path")
+
+	conf := flag.String("config", "rules.yaml", "This flag is used for specifying the configuration file.")
+	json := flag.Bool("json", false, "If the json flag is true routerarc will read json file for configuration,\nalso you need to to specify the path of the json file using -config flag")
 	flag.Parse()
 
-	fmt.Println("Configuration from", *conf)
+	log.Println("[configuration] Configuration from", *conf)
 
+	// for gracefull shutdown of service.
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
 	// Parse the serviceConfig
-	serviceConfig, err := config.GetConfig(*conf)
+	serviceConfig, err := config.GetConfig(*conf, *json)
 	if err != nil {
 		log.Fatal("[configuration]", err)
 	}
