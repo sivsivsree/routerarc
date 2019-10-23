@@ -12,7 +12,7 @@
           ]
         },
         {
-          "service": "/mobile/auth",
+          "servie": "/mobile/auth",
           "upstream": [
             "http://localhost:8086",
             "http://localhost:8045"
@@ -20,17 +20,8 @@
           "loadbalacer": "round-robin"
         },
         {
-          "service": "/retrival",
-          "upstream": [
-            "http://localhost:8084",
-            "http://localhost:8085"
-          ],
-          "loadbalacer": "round-robin"
-        },
-        {
-          "service": "/retrival",
-          "static": "rules",
-          "loadbalacer": "round-robin"
+          "servie": "/",
+          "static": "public_html"
         }
       ]
     }
@@ -48,7 +39,7 @@
     {
       "name": "frontend",
       "port": "9000",
-      "static": "rules"
+      "static": "public"
     }
   ]
 }

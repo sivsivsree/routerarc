@@ -21,6 +21,10 @@ An API Gateway is a server that is the single entry point into the system. It is
 
  A popular website that gets millions of users every day may not be able to handle all of its incoming site traffic with a single origin server. Instead, the site can be distributed among a pool of different servers, all handling requests for the same site. In this case, a reverse proxy can provide a load balancing solution which will distribute the incoming traffic evenly among the different servers to prevent any single server from becoming overloaded. In the event that a server fails completely, other servers can step up to handle the traffic.
 
+
+### 4. Static File Serving
+  - Can be directly attached to a port
+  > Note: if you have and angular application and want to port forward the build HTML and assets to a server u can use the proxy serve 
 <hr>
 
 
@@ -76,11 +80,13 @@ router:
         upstream:
           - http://localhost:8081
           - http://localhost:8082
+          -
       - servie: "/mobile/auth"
         upstream:
           - http://localhost:8086
           - http://localhost:8045
         loadbalacer: round-robin
+
       - servie: "/retrival"
         upstream:
           - http://localhost:8084
@@ -93,12 +99,10 @@ proxy:
       - https://api.github.com
       - https://google.com
     loadbalacer: round-robin
+
   - name: frontend
     port: '9000'
-    to:
-      - https://jsonplaceholder.typicode.com
-      - http://example.com
-    loadbalacer: round-robin
+    static: "public"
     
 ```
 
