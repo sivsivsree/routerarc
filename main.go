@@ -36,7 +36,7 @@ func main() {
 
 	log.Println("[configuration] Configuration from", *conf)
 
-	// for gracefull shutdown of service.
+	// for graceful shutdown of service.
 	done := make(chan os.Signal, 1)
 	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 
