@@ -5,10 +5,12 @@ import (
 	"strings"
 )
 
+// FileSystem is used for static file serving
 type FileSystem struct {
 	FS http.FileSystem
 }
 
+// Open is used to implement the Filesystem
 func (fs FileSystem) Open(path string) (http.File, error) {
 	f, err := fs.FS.Open(path)
 	if err != nil {
@@ -29,11 +31,4 @@ func (fs FileSystem) Open(path string) (http.File, error) {
 	}
 
 	return f, nil
-}
-
-type StaticFileServer struct {
-}
-
-func (sfs *StaticFileServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
 }

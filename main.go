@@ -17,10 +17,6 @@ func init() {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 }
 
-func SetUpFlags() {
-
-}
-
 /*
 *
 *	So basically what we are going to build is

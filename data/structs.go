@@ -1,5 +1,6 @@
 package data
 
+// Proxy is data format to parse the configuration file
 type Proxy struct {
 	Name        string   `json:"name";yaml:"name"`
 	Port        string   `json:"port";yaml:"port"`
@@ -8,6 +9,7 @@ type Proxy struct {
 	Static      string   `json:"static,omitempty";yaml:"static,omitempty"`
 }
 
+// Router is data format to parse the configuration file
 type Router struct {
 	Port string `json:"port";yaml:"port"`
 	Case []struct {

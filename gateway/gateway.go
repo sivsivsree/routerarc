@@ -46,7 +46,7 @@ func (gws ApiGatewayServers) SpinGatewayServer(routes []data.Router) {
 
 }
 
-// ShutdownProxyServers is used to gracefully shutdown all the currently running services.
+// ShutdownGatewayServer is used to gracefully shutdown all the currently running services.
 func (gws *ApiGatewayServers) ShutdownGatewayServer() {
 
 	_, cancel := context.WithTimeout(context.Background(), 5*time.Second)

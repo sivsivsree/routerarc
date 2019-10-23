@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// ReverseProxyServer contains all the
+// ReverseProxyServers contains all the
 // ActiveServers used for Reverse proxying.
 type ReverseProxyServers struct {
 	ActiveServers []struct {
