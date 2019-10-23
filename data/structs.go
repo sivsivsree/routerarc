@@ -5,6 +5,7 @@ type Proxy struct {
 	Port        string   `json:"port";yaml:"port"`
 	To          []string `json:"to";yaml:"to"`
 	Loadbalacer string   `json:"loadbalacer";yaml:"loadbalacer"`
+	Static      string   `json:"static,omitempty";yaml:"static,omitempty"`
 }
 
 type Router struct {
@@ -13,6 +14,6 @@ type Router struct {
 		Service     string   `json:"service,omitempty";yaml:"service"`
 		Loadbalacer string   `json:"loadbalacer";yaml:"loadbalacer"`
 		Upstream    []string `json:"upstream";yaml:"upstream"`
-		Servie      string   `json:"servie,omitempty";yaml:"servie"`
+		Static      []string `json:"static,omitempty";yaml:"static,omitempty"`
 	} `json:"case";yaml:"case"`
 }

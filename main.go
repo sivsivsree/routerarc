@@ -4,6 +4,7 @@ import (
 	"crypto/tls"
 	"flag"
 	"github.com/sivsivsree/routerarc/config"
+	"github.com/sivsivsree/routerarc/gateway"
 	"github.com/sivsivsree/routerarc/proxy"
 	"log"
 	"net/http"
@@ -46,12 +47,12 @@ func main() {
 		log.Fatal("[configuration]", err)
 	}
 
-	// Initialize the APIGatewayServer
-	//gwApi := gateway.InitApiGatewayServer()
-	//// Run only if there is Router configurations in the configuration.
-	//if serviceConfig.RouterServiceCount() > 0 {
-	//	gwApi.SpinGatewayServer(serviceConfig.Router)
-	//}
+	// Initialize the APIRouter
+	gwApi := gateway.InitApiGatewayServer()
+	// Run only if there is Router configurations in the configuration.
+	if serviceConfig.RouterServiceCount() > 0 {
+		gwApi.SpinGatewayServer(serviceConfig.Router)
+	}
 
 	// Initialize the ReverseProxy Server
 	rp := proxy.InitReverseProxy()

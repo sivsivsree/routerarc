@@ -21,6 +21,11 @@ func (config Configurations) ProxyServiceCount() int {
 
 }
 
+func (config Configurations) validateRouter() error {
+	// Todo: make sure the static and upstream does not exist each other
+	return nil
+}
+
 func (config Configurations) RouterServiceCount() int {
 	return len(config.Router)
 

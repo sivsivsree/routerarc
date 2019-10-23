@@ -3,7 +3,6 @@ package gateway
 import (
 	"context"
 	"github.com/sivsivsree/routerarc/data"
-	"log"
 	"net/http"
 	"time"
 )
@@ -20,16 +19,17 @@ func InitApiGatewayServer() ApiGatewayServers {
 	return ApiGatewayServers{}
 }
 
-func (gws ApiGatewayServers) startGatewayServer() *http.Server {
-	server := &http.Server{Addr: ":" + gws.Port, Handler: handler}
-
-	go func() {
-		if err := server.ListenAndServe(); err != nil {
-			log.Println("[startGatewayServerSetup]", "failed,", err)
-		}
-	}()
-	return server
+func (gws ApiGatewayServers) startGatewayServer(router data.Router) *http.Server {
+	//server := &http.Server{Addr: ":" + gws.Port, Handler: handler}
+	//
+	//go func() {
+	//	if err := server.ListenAndServe(); err != nil {
+	//		log.Println("[startGatewayServerSetup]", "failed,", err)
+	//	}
+	//}()
+	//return server
 	return nil
+
 }
 
 func (gws ApiGatewayServers) SpinGatewayServer(routes []data.Router) {

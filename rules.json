@@ -12,7 +12,7 @@
           ]
         },
         {
-          "servie": "/mobile/auth",
+          "service": "/mobile/auth",
           "upstream": [
             "http://localhost:8086",
             "http://localhost:8045"
@@ -20,11 +20,16 @@
           "loadbalacer": "round-robin"
         },
         {
-          "servie": "/retrival",
+          "service": "/retrival",
           "upstream": [
             "http://localhost:8084",
             "http://localhost:8085"
           ],
+          "loadbalacer": "round-robin"
+        },
+        {
+          "service": "/retrival",
+          "static": "rules",
           "loadbalacer": "round-robin"
         }
       ]
@@ -43,11 +48,7 @@
     {
       "name": "frontend",
       "port": "9000",
-      "to": [
-        "https://jsonplaceholder.typicode.com",
-        "http://example.com"
-      ],
-      "loadbalacer": "round-robin"
+      "static": "rules"
     }
   ]
 }

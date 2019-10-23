@@ -2,10 +2,13 @@ package proxy
 
 import (
 	"context"
+	"fmt"
 	"github.com/sivsivsree/routerarc/balancer"
 	"github.com/sivsivsree/routerarc/data"
+	"github.com/sivsivsree/routerarc/utils"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
@@ -43,21 +46,41 @@ func (rpServers *ReverseProxyServers) SpinProxyServers(proxies []data.Proxy) {
 	for _, proxyValue := range proxies {
 
 		go func(proxy data.Proxy) {
-			// make the balance handle pass through here
-			lb := balancer.New(proxy.Loadbalacer, proxy.To)
-			server := rpServers.startHttpServer(proxy, lb)
 
-			rpServers.ActiveServers = append(rpServers.ActiveServers, struct {
-				Name   string
-				Server *http.Server
-			}{Name: proxy.Name, Server: server})
+			if proxy.Static != "" {
 
-			log.Println("[ReverseProxyServerUp]", proxy.Name, "reverse proxy serving on port", server.Addr)
+				fmt.Println(proxy)
+				fileServer := http.FileServer(utils.FileSystem{FS: http.Dir(proxy.Static)})
+
+				//http.Handle("/", http.StripPrefix(strings.TrimRight("/", "/"), fileServer))
+				handler := http.NewServeMux()
+				handler.Handle("/", http.StripPrefix(strings.TrimRight("/", "/"), fileServer))
+				log.Println("using [index.html] as default entrypoint for", proxy.Name)
+				staticServer := rpServers.startHttpServer(proxy, handler)
+				rpServers.addActiveServers(proxy, staticServer)
+			}
+
+			if proxy.Loadbalacer != "" && proxy.Static == "" {
+				// make the balance handle pass through here
+				lb := balancer.New(proxy.Loadbalacer, proxy.To)
+				server := rpServers.startHttpServer(proxy, lb)
+				rpServers.addActiveServers(proxy, server)
+
+			}
 
 		}(proxyValue)
 
 	}
 
+}
+
+func (rpServers *ReverseProxyServers) addActiveServers(proxy data.Proxy, server *http.Server) {
+	rpServers.ActiveServers = append(rpServers.ActiveServers, struct {
+		Name   string
+		Server *http.Server
+	}{Name: proxy.Name, Server: server})
+
+	log.Println("[ReverseProxyServerUp]", proxy.Name, "reverse proxy serving on port", server.Addr)
 }
 
 // ShutdownProxyServers is used to gracefully shutdown all the currently

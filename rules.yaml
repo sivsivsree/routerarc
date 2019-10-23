@@ -28,7 +28,4 @@ proxy:
 
   - name: frontend
     port: '9000'
-    to:
-      - https://jsonplaceholder.typicode.com
-      - http://example.com
-    loadbalacer: round-robin
+    static: "public"
